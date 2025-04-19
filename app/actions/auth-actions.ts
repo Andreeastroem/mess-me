@@ -51,7 +51,7 @@ export async function login(
 
     // Set a cookie to maintain the session
     // In a real app, you would use a proper session management system
-    cookies().set("userId", String(user.id), {
+    (await cookies()).set("userId", String(user.id), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24 * 7, // 1 week
@@ -72,7 +72,7 @@ export async function login(
 }
 
 export async function logout() {
-  cookies().delete("userId");
+  (await cookies()).delete("userId");
   redirect("/login");
 }
 
@@ -86,7 +86,7 @@ export async function getUserSession() {
 
   try {
     const users = await sql`
-      SELECT id, username, display_name, avatar_url, status
+      SELECT id, username, display_name, avatar_url, status, bio
       FROM users
       WHERE id = ${Number.parseInt(userId)}
     `;

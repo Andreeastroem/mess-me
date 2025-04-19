@@ -1,111 +1,132 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { updateUserProfile, updateUserPassword, updateUserAvatar } from "@/app/actions/user-actions"
-import type { User } from "@/lib/db"
-import { cn } from "@/lib/utils"
-import { useRouter } from "next/navigation"
-import { ArrowLeft, Camera, Check, Loader2 } from "lucide-react"
-import Link from "next/link"
+import { useState } from "react";
+import {
+  updateUserProfile,
+  updateUserPassword,
+  updateUserAvatar,
+} from "@/app/actions/user-actions";
+import type { User } from "@/lib/db";
+import { cn } from "@/lib/utils";
+import { ArrowLeft, Camera, Check, Loader2 } from "lucide-react";
+import Link from "next/link";
 
 type AccountSettingsProps = {
-  user: User
-}
+  user: User;
+};
 
 export function AccountSettings({ user }: AccountSettingsProps) {
-  const router = useRouter()
-  const [activeTab, setActiveTab] = useState<"profile" | "password" | "avatar">("profile")
+  const [activeTab, setActiveTab] = useState<"profile" | "password" | "avatar">(
+    "profile"
+  );
   const [profileStatus, setProfileStatus] = useState<{
-    loading: boolean
-    success: boolean
-    errors?: Record<string, string[]>
+    loading: boolean;
+    success: boolean;
+    errors?: Record<string, string[]>;
   }>({
     loading: false,
     success: false,
-  })
+  });
   const [passwordStatus, setPasswordStatus] = useState<{
-    loading: boolean
-    success: boolean
-    errors?: Record<string, string[]>
+    loading: boolean;
+    success: boolean;
+    errors?: Record<string, string[]>;
   }>({
     loading: false,
     success: false,
-  })
+  });
   const [avatarStatus, setAvatarStatus] = useState<{
-    loading: boolean
-    success: boolean
-    error?: string
+    loading: boolean;
+    success: boolean;
+    error?: string;
   }>({
     loading: false,
     success: false,
-  })
+  });
 
   async function handleProfileSubmit(formData: FormData) {
-    setProfileStatus({ loading: true, success: false })
+    setProfileStatus({ loading: true, success: false });
     try {
-      const result = await updateUserProfile(user.id, formData)
+      const result = await updateUserProfile(user.id, formData);
       if (result.success) {
-        setProfileStatus({ loading: false, success: true })
+        setProfileStatus({ loading: false, success: true });
         // Reset success message after 3 seconds
         setTimeout(() => {
-          setProfileStatus((prev) => ({ ...prev, success: false }))
-        }, 3000)
+          setProfileStatus((prev) => ({ ...prev, success: false }));
+        }, 3000);
       } else {
-        setProfileStatus({ loading: false, success: false, errors: result.errors })
+        setProfileStatus({
+          loading: false,
+          success: false,
+          errors: result.errors,
+        });
       }
     } catch (error) {
+      console.error(error);
       setProfileStatus({
         loading: false,
         success: false,
         errors: { _form: ["An unexpected error occurred"] },
-      })
+      });
     }
   }
 
   async function handlePasswordSubmit(formData: FormData) {
-    setPasswordStatus({ loading: true, success: false })
+    setPasswordStatus({ loading: true, success: false });
     try {
-      const result = await updateUserPassword(user.id, formData)
+      const result = await updateUserPassword(user.id, formData);
       if (result.success) {
-        setPasswordStatus({ loading: false, success: true })
+        setPasswordStatus({ loading: false, success: true });
         // Reset form
-        const form = document.getElementById("password-form") as HTMLFormElement
-        form.reset()
+        const form = document.getElementById(
+          "password-form"
+        ) as HTMLFormElement;
+        form.reset();
         // Reset success message after 3 seconds
         setTimeout(() => {
-          setPasswordStatus((prev) => ({ ...prev, success: false }))
-        }, 3000)
+          setPasswordStatus((prev) => ({ ...prev, success: false }));
+        }, 3000);
       } else {
-        setPasswordStatus({ loading: false, success: false, errors: result.errors })
+        setPasswordStatus({
+          loading: false,
+          success: false,
+          errors: result.errors,
+        });
       }
     } catch (error) {
+      console.error(error);
       setPasswordStatus({
         loading: false,
         success: false,
         errors: { _form: ["An unexpected error occurred"] },
-      })
+      });
     }
   }
 
   async function handleAvatarSubmit(formData: FormData) {
-    setAvatarStatus({ loading: true, success: false })
+    setAvatarStatus({ loading: true, success: false });
     try {
-      const result = await updateUserAvatar(user.id, formData)
+      const result = await updateUserAvatar(user.id, formData);
       if (result.success) {
-        setAvatarStatus({ loading: false, success: true })
+        setAvatarStatus({ loading: false, success: true });
         // Reset success message after 3 seconds
         setTimeout(() => {
-          setAvatarStatus((prev) => ({ ...prev, success: false }))
-        }, 3000)
+          setAvatarStatus((prev) => ({ ...prev, success: false }));
+        }, 3000);
       } else {
-        setAvatarStatus({ loading: false, success: false, error: result.error })
+        setAvatarStatus({
+          loading: false,
+          success: false,
+          error: result.error,
+        });
       }
     } catch (error) {
+      console.error(error);
       setAvatarStatus({
         loading: false,
         success: false,
         error: "An unexpected error occurred",
-      })
+      });
     }
   }
 
@@ -115,13 +136,16 @@ export function AccountSettings({ user }: AccountSettingsProps) {
         "p-6 rounded-xl",
         "bg-gradient-to-b from-gray-900 to-gray-800",
         "border border-gray-800",
-        "shadow-[0_0_30px_rgba(0,0,0,0.8)]",
+        "shadow-[0_0_30px_rgba(0,0,0,0.8)]"
       )}
     >
       <div className="flex items-center mb-6">
         <Link
           href="/chat"
-          className={cn("flex items-center text-gray-400 hover:text-white mr-4", "transition-colors duration-200")}
+          className={cn(
+            "flex items-center text-gray-400 hover:text-white mr-4",
+            "transition-colors duration-200"
+          )}
         >
           <ArrowLeft className="w-5 h-5 mr-1" />
           <span>Back</span>
@@ -134,7 +158,9 @@ export function AccountSettings({ user }: AccountSettingsProps) {
           onClick={() => setActiveTab("profile")}
           className={cn(
             "px-4 py-2 font-medium",
-            activeTab === "profile" ? "text-[#ff00ff] border-b-2 border-[#ff00ff]" : "text-gray-400 hover:text-white",
+            activeTab === "profile"
+              ? "text-[#ff00ff] border-b-2 border-[#ff00ff]"
+              : "text-gray-400 hover:text-white"
           )}
         >
           Profile
@@ -143,7 +169,9 @@ export function AccountSettings({ user }: AccountSettingsProps) {
           onClick={() => setActiveTab("password")}
           className={cn(
             "px-4 py-2 font-medium",
-            activeTab === "password" ? "text-[#00ffff] border-b-2 border-[#00ffff]" : "text-gray-400 hover:text-white",
+            activeTab === "password"
+              ? "text-[#00ffff] border-b-2 border-[#00ffff]"
+              : "text-gray-400 hover:text-white"
           )}
         >
           Password
@@ -152,7 +180,9 @@ export function AccountSettings({ user }: AccountSettingsProps) {
           onClick={() => setActiveTab("avatar")}
           className={cn(
             "px-4 py-2 font-medium",
-            activeTab === "avatar" ? "text-[#ff00ff] border-b-2 border-[#ff00ff]" : "text-gray-400 hover:text-white",
+            activeTab === "avatar"
+              ? "text-[#ff00ff] border-b-2 border-[#ff00ff]"
+              : "text-gray-400 hover:text-white"
           )}
         >
           Avatar
@@ -162,7 +192,10 @@ export function AccountSettings({ user }: AccountSettingsProps) {
       {activeTab === "profile" && (
         <form action={handleProfileSubmit} className="space-y-6">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-1">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
               Username
             </label>
             <input
@@ -176,16 +209,21 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                 "bg-gray-800 text-white",
                 "border border-gray-700",
                 "focus:outline-none focus:ring-2 focus:ring-[#ff00ff] focus:border-transparent",
-                "transition-all duration-200",
+                "transition-all duration-200"
               )}
             />
             {profileStatus.errors?.username && (
-              <p className="mt-1 text-sm text-red-400">{profileStatus.errors.username[0]}</p>
+              <p className="mt-1 text-sm text-red-400">
+                {profileStatus.errors.username[0]}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="display_name" className="block text-sm font-medium text-gray-300 mb-1">
+            <label
+              htmlFor="display_name"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
               Display Name
             </label>
             <input
@@ -198,16 +236,21 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                 "bg-gray-800 text-white",
                 "border border-gray-700",
                 "focus:outline-none focus:ring-2 focus:ring-[#ff00ff] focus:border-transparent",
-                "transition-all duration-200",
+                "transition-all duration-200"
               )}
             />
             {profileStatus.errors?.display_name && (
-              <p className="mt-1 text-sm text-red-400">{profileStatus.errors.display_name[0]}</p>
+              <p className="mt-1 text-sm text-red-400">
+                {profileStatus.errors.display_name[0]}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="bio" className="block text-sm font-medium text-gray-300 mb-1">
+            <label
+              htmlFor="bio"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
               Bio
             </label>
             <textarea
@@ -221,10 +264,14 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                 "border border-gray-700",
                 "focus:outline-none focus:ring-2 focus:ring-[#ff00ff] focus:border-transparent",
                 "transition-all duration-200",
-                "resize-none",
+                "resize-none"
               )}
             />
-            {profileStatus.errors?.bio && <p className="mt-1 text-sm text-red-400">{profileStatus.errors.bio[0]}</p>}
+            {profileStatus.errors?.bio && (
+              <p className="mt-1 text-sm text-red-400">
+                {profileStatus.errors.bio[0]}
+              </p>
+            )}
           </div>
 
           {profileStatus.errors?._form && (
@@ -251,7 +298,7 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                 "hover:shadow-[0_0_15px_rgba(255,0,255,0.5)]",
                 "transition-all duration-300",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
-                "flex items-center justify-center",
+                "flex items-center justify-center"
               )}
             >
               {profileStatus.loading ? (
@@ -268,9 +315,16 @@ export function AccountSettings({ user }: AccountSettingsProps) {
       )}
 
       {activeTab === "password" && (
-        <form id="password-form" action={handlePasswordSubmit} className="space-y-6">
+        <form
+          id="password-form"
+          action={handlePasswordSubmit}
+          className="space-y-6"
+        >
           <div>
-            <label htmlFor="current_password" className="block text-sm font-medium text-gray-300 mb-1">
+            <label
+              htmlFor="current_password"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
               Current Password
             </label>
             <input
@@ -283,16 +337,21 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                 "bg-gray-800 text-white",
                 "border border-gray-700",
                 "focus:outline-none focus:ring-2 focus:ring-[#00ffff] focus:border-transparent",
-                "transition-all duration-200",
+                "transition-all duration-200"
               )}
             />
             {passwordStatus.errors?.current_password && (
-              <p className="mt-1 text-sm text-red-400">{passwordStatus.errors.current_password[0]}</p>
+              <p className="mt-1 text-sm text-red-400">
+                {passwordStatus.errors.current_password[0]}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="new_password" className="block text-sm font-medium text-gray-300 mb-1">
+            <label
+              htmlFor="new_password"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
               New Password
             </label>
             <input
@@ -305,16 +364,21 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                 "bg-gray-800 text-white",
                 "border border-gray-700",
                 "focus:outline-none focus:ring-2 focus:ring-[#00ffff] focus:border-transparent",
-                "transition-all duration-200",
+                "transition-all duration-200"
               )}
             />
             {passwordStatus.errors?.new_password && (
-              <p className="mt-1 text-sm text-red-400">{passwordStatus.errors.new_password[0]}</p>
+              <p className="mt-1 text-sm text-red-400">
+                {passwordStatus.errors.new_password[0]}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="confirm_password" className="block text-sm font-medium text-gray-300 mb-1">
+            <label
+              htmlFor="confirm_password"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
               Confirm New Password
             </label>
             <input
@@ -327,11 +391,13 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                 "bg-gray-800 text-white",
                 "border border-gray-700",
                 "focus:outline-none focus:ring-2 focus:ring-[#00ffff] focus:border-transparent",
-                "transition-all duration-200",
+                "transition-all duration-200"
               )}
             />
             {passwordStatus.errors?.confirm_password && (
-              <p className="mt-1 text-sm text-red-400">{passwordStatus.errors.confirm_password[0]}</p>
+              <p className="mt-1 text-sm text-red-400">
+                {passwordStatus.errors.confirm_password[0]}
+              </p>
             )}
           </div>
 
@@ -359,7 +425,7 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                 "hover:shadow-[0_0_15px_rgba(0,255,255,0.5)]",
                 "transition-all duration-300",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
-                "flex items-center justify-center",
+                "flex items-center justify-center"
               )}
             >
               {passwordStatus.loading ? (
@@ -386,7 +452,7 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                 "text-white text-4xl font-bold",
                 "relative",
                 "border-4 border-gray-800",
-                "shadow-[0_0_20px_rgba(255,0,255,0.3)]",
+                "shadow-[0_0_20px_rgba(255,0,255,0.3)]"
               )}
             >
               {user.avatar_url ? (
@@ -405,7 +471,7 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                   "bg-[#ff00ff]",
                   "flex items-center justify-center",
                   "text-white",
-                  "shadow-[0_0_10px_rgba(255,0,255,0.5)]",
+                  "shadow-[0_0_10px_rgba(255,0,255,0.5)]"
                 )}
               >
                 <Camera className="w-4 h-4" />
@@ -413,7 +479,8 @@ export function AccountSettings({ user }: AccountSettingsProps) {
             </div>
 
             <p className="text-gray-400 text-sm mb-4">
-              Enter a URL for your avatar image. In a real app, you would be able to upload an image.
+              Enter a URL for your avatar image. In a real app, you would be
+              able to upload an image.
             </p>
 
             <input
@@ -427,7 +494,7 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                 "bg-gray-800 text-white",
                 "border border-gray-700",
                 "focus:outline-none focus:ring-2 focus:ring-[#ff00ff] focus:border-transparent",
-                "transition-all duration-200",
+                "transition-all duration-200"
               )}
             />
           </div>
@@ -456,7 +523,7 @@ export function AccountSettings({ user }: AccountSettingsProps) {
                 "hover:shadow-[0_0_15px_rgba(255,0,255,0.5)]",
                 "transition-all duration-300",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
-                "flex items-center justify-center",
+                "flex items-center justify-center"
               )}
             >
               {avatarStatus.loading ? (
@@ -472,5 +539,5 @@ export function AccountSettings({ user }: AccountSettingsProps) {
         </form>
       )}
     </div>
-  )
+  );
 }

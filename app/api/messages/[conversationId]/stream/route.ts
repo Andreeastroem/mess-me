@@ -7,8 +7,9 @@ export const runtime = "nodejs";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { conversationId: string } }
+  props: { params: Promise<{ conversationId: string }> }
 ) {
+  const params = await props.params;
   try {
     // Check authentication
     const cookieStore = await cookies();
