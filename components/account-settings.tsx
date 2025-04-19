@@ -10,6 +10,7 @@ import type { User } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, Camera, Check, Loader2 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 type AccountSettingsProps = {
   user: User;
@@ -456,10 +457,12 @@ export function AccountSettings({ user }: AccountSettingsProps) {
               )}
             >
               {user.avatar_url ? (
-                <img
+                <Image
                   src={user.avatar_url || "/placeholder.svg"}
                   alt={user.username}
                   className="w-full h-full rounded-full object-cover"
+                  width={128}
+                  height={128}
                 />
               ) : (
                 user.username.charAt(0).toUpperCase()

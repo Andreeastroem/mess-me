@@ -17,7 +17,7 @@ type SidebarProps = {
 
 export function Sidebar({ user }: SidebarProps) {
   const [retryKey, setRetryKey] = useState(0);
-  const { conversations, isLoading, error } = useConversationStream();
+  const { conversations, isLoading, error } = useConversationStream(retryKey);
 
   const handleRetry = useCallback(() => {
     setRetryKey((prev) => prev + 1);
