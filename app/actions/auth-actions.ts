@@ -1,6 +1,6 @@
 "use server";
 
-import { sql } from "@/lib/db";
+import { sql, User } from "@/lib/db";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -85,11 +85,11 @@ export async function getUserSession() {
   }
 
   try {
-    const users = await sql`
+    const users = (await sql`
       SELECT id, username, display_name, avatar_url, status, bio
       FROM users
       WHERE id = ${Number.parseInt(userId)}
-    `;
+    `) as User[];
 
     if (users.length === 0) {
       return null;

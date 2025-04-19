@@ -103,10 +103,12 @@ export function useMessageStream(conversationId: number, retryKey: number) {
       connectToStream();
     } else {
       console.log("Closing message SSE connection");
-      eventSourceRef.current.close();
+      eventSourceRef.current?.close();
       eventSourceRef.current = null;
-      clearTimeout(reconnectTimeoutRef.current);
-      reconnectTimeoutRef.current = null;
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
+      }
     }
 
     // Clean up on unmount

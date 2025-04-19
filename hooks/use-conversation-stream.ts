@@ -98,10 +98,12 @@ export function useConversationStream(retryKey: number) {
       connectToStream();
     } else {
       console.log("Closing conversations SSE connection");
-      eventSourceRef.current.close();
+      eventSourceRef.current?.close();
       eventSourceRef.current = null;
-      clearTimeout(reconnectTimeoutRef.current);
-      reconnectTimeoutRef.current = null;
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
+      }
     }
 
     // Clean up on unmount
