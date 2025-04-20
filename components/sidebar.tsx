@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useConversationStream } from "@/hooks/use-conversation-stream";
 import { SSEFallback } from "./sse-fallback";
 import Image from "next/image";
+import { NewConversationPopup } from "./new-conversation-popup";
 
 type SidebarProps = {
   user: User;
@@ -17,6 +18,7 @@ type SidebarProps = {
 
 export function Sidebar({ user }: SidebarProps) {
   const [retryKey, setRetryKey] = useState(0);
+  const [showNewConversation, setShowNewConversation] = useState(false);
   const { conversations, isLoading, error } = useConversationStream(retryKey);
 
   const handleRetry = useCallback(() => {
@@ -47,7 +49,7 @@ export function Sidebar({ user }: SidebarProps) {
             "drop-shadow-[0_0_5px_rgba(255,0,255,0.5)]"
           )}
         >
-          Neon Chat
+          {"Mess me"}
         </Link>
         <div className="flex space-x-2">
           <Link
@@ -140,6 +142,7 @@ export function Sidebar({ user }: SidebarProps) {
 
       {/* New Conversation Button */}
       <button
+        onClick={() => setShowNewConversation(true)}
         className={cn(
           "mx-4 mb-4 py-2 px-4 rounded-lg",
           "bg-gradient-to-r from-[#ff00ff] to-[#00ffff]",
@@ -152,6 +155,13 @@ export function Sidebar({ user }: SidebarProps) {
         <Plus className="w-4 h-4 mr-2" />
         New Conversation
       </button>
+
+      {showNewConversation && (
+        <NewConversationPopup
+          currentUserId={user.id}
+          onClose={() => setShowNewConversation(false)}
+        />
+      )}
 
       {/* Conversations List */}
       <div className="flex-1 overflow-y-auto px-4">
