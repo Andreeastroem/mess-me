@@ -64,6 +64,7 @@ export function NewConversationPopup({
   const handleSelectUser = async (user: User) => {
     try {
       const conversation = await createConversation(currentUserId, user.id);
+
       if (conversation) {
         router.push(`/chat/${conversation.id}`);
         onClose();

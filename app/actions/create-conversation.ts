@@ -1,6 +1,6 @@
 "use server";
 
-import { sql } from "@/lib/db";
+import { Conversation, sql } from "@/lib/db";
 
 export async function createConversation(
   userId: number,
@@ -8,12 +8,19 @@ export async function createConversation(
 ) {
   try {
     const conversation =
-      await sql`INSERT INTO conversations (name, created_by) VALUES ('New conversation', ${userId})`;
+      (await sql`INSERT INTO conversations (name, created_by) VALUES ('New conversation', ${userId})`) as Conversation[];
 
-    await addToConversation(conversation.id, userId);
-    await addToConversation(conversation.id, participantId);
+    if (conversation.length === 0) {
+      console.error("Failed to create conversation");
+      return null;
+    }
+    const conversationId = conversation[0].id;
+    // Add the user and participant to the conversation
 
-    return conversation;
+    await addToConversation(conversationId, userId);
+    await addToConversation(conversationId, participantId);
+
+    return conversation[0];
   } catch (error) {
     console.error("Error creating conversation:", error);
     return null;
