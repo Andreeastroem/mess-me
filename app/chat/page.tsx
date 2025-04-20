@@ -11,7 +11,7 @@ export default async function ChatPage() {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-950 p-4">
+    <div className="flex items-center justify-center h-full bg-gray-950 p-4">
       <div className="text-center max-w-md">
         <div
           className={cn(
